@@ -212,6 +212,8 @@ Function Disable-InactiveADAccounts {
     #Loop through array indexes
     ForEach ($i in 0..($UserCount -1)) {
 
+        Write-Progress -Activity "Comparing Domain Controller data..." -Status ("Percent Complete:" + "{0:N0}" -f ((($i) / 0..($UserCount -1)) * 100) + "%") -PercentComplete ((($i) / 0..($UserCount -1)) * 100) -ErrorAction SilentlyContinue
+
         #Grab user object from each resultant array, make array of each user object
         if(($UserEntries.SamAccountName | Select-Object -Unique).Count -gt 1) {
         
@@ -292,7 +294,9 @@ Function Disable-InactiveADAccounts {
             Name=$UserEntries[0].Name
             DistinguishedName=$UserEntries[0].DistinguishedName
             Description=$UserEntries[0].Description
-        } | Write-Output ("User: " + $_.SamAccountName + " - Last logon: $TrueLastLogon ($DaysInactive day(s) inactivity) - $PercentComplete% complete.")
+        }  
+
+        #Write-Output ("User: " + $_.SamAccountName + " - Last logon: $TrueLastLogon ($DaysInactive day(s) inactivity) - $PercentComplete% complete.")
     }
 
     Write-Output "Getting exclusion group members..."
